@@ -34,6 +34,7 @@ type Cache struct {
 }
 
 // A Key may be any value that is comparable. See http://golang.org/ref/spec#Comparison_operators
+// 值支持任意类型
 type Key interface{}
 
 type entry struct {
@@ -53,6 +54,7 @@ func New(maxEntries int) *Cache {
 }
 
 // Add adds a value to the cache.
+// 添加数据K，V到 cache
 func (c *Cache) Add(key Key, value interface{}) {
 	if c.cache == nil {
 		c.cache = make(map[interface{}]*list.Element)
@@ -71,6 +73,7 @@ func (c *Cache) Add(key Key, value interface{}) {
 }
 
 // Get looks up a key's value from the cache.
+// 得到key对应的value值，如果查找成功就将数据放置到队列前面
 func (c *Cache) Get(key Key) (value interface{}, ok bool) {
 	if c.cache == nil {
 		return
@@ -83,6 +86,7 @@ func (c *Cache) Get(key Key) (value interface{}, ok bool) {
 }
 
 // Remove removes the provided key from the cache.
+// 移除一个key
 func (c *Cache) Remove(key Key) {
 	if c.cache == nil {
 		return
@@ -93,6 +97,7 @@ func (c *Cache) Remove(key Key) {
 }
 
 // RemoveOldest removes the oldest item from the cache.
+// 从队列尾部去掉最旧的数据
 func (c *Cache) RemoveOldest() {
 	if c.cache == nil {
 		return
@@ -113,6 +118,7 @@ func (c *Cache) removeElement(e *list.Element) {
 }
 
 // Len returns the number of items in the cache.
+// 获取cache的元素个数
 func (c *Cache) Len() int {
 	if c.cache == nil {
 		return 0
@@ -121,6 +127,7 @@ func (c *Cache) Len() int {
 }
 
 // Clear purges all stored items from the cache.
+// 清理缓存中的数据
 func (c *Cache) Clear() {
 	if c.OnEvicted != nil {
 		for _, e := range c.cache {

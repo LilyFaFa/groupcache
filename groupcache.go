@@ -138,6 +138,8 @@ func callInitPeerServer() {
 
 // A Group is a cache namespace and associated data loaded spread over
 // a group of 1 or more machines.
+// Group是cache的命名空间
+// 每个节点可以创建多个不同名称的Group对象，每个对应一个命名空间，不同命名空间的cache是互相独立的。
 type Group struct {
 	name       string
 	getter     Getter
@@ -149,6 +151,7 @@ type Group struct {
 	// (amongst its peers) is authoritative. That is, this cache
 	// contains keys which consistent hash on to this process's
 	// peer number.
+	// 自己该负责的cache
 	mainCache cache
 
 	// hotCache contains keys/values for which this peer is not
@@ -159,6 +162,9 @@ type Group struct {
 	// network card could become the bottleneck on a popular key.
 	// This cache is used sparingly to maximize the total number
 	// of key/value pairs that can be stored globally.
+	// 不该自己负责但是是热点数据，经常会被访问到，会有请求会路由到该key归属的节点，
+	// 节点的流量会过大。热数据自动扩散功能，如果节点的某些key访问特别频繁，
+	// 而这些key的归属节点不在本节点，就保存在这个结构中，从而环节节点的热点压力。
 	hotCache cache
 
 	// loadGroup ensures that each key is only fetched once

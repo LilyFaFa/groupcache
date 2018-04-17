@@ -58,6 +58,7 @@ type HTTPPool struct {
 }
 
 // HTTPPoolOptions are the configurations of a HTTPPool.
+// HTTPPool的配置
 type HTTPPoolOptions struct {
 	// BasePath specifies the HTTP path that will serve groupcache requests.
 	// If blank, it defaults to "/_groupcache/".

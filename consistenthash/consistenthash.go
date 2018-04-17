@@ -25,6 +25,9 @@ import (
 
 type Hash func(data []byte) uint32
 
+// keys 中存放着虚拟节点 hash 后的值，并且会按照升序排序
+// 虚拟节点可以在 hashMap 中找到实体节点，所有映射到虚拟节点的值都会被保存到实体节点的map 键值对中
+// 查找方式使用的是二分查找算法
 type Map struct {
 	hash     Hash
 	replicas int
@@ -39,6 +42,7 @@ func New(replicas int, fn Hash) *Map {
 		hashMap:  make(map[int]string),
 	}
 	if m.hash == nil {
+		//默认使用的函数是Hash方法是 crc32.ChecksumIEEE
 		m.hash = crc32.ChecksumIEEE
 	}
 	return m
@@ -50,14 +54,21 @@ func (m *Map) IsEmpty() bool {
 }
 
 // Adds some keys to the hash.
+// 添加一下hash 的key，虚拟节点数目就是replicas
 func (m *Map) Add(keys ...string) {
 	for _, key := range keys {
 		for i := 0; i < m.replicas; i++ {
+			// 对某个值生成副本数目个hash
+			// 对于每个机器，如果是使用ip那么就会生成 “编号+ip" 的key，
+			// 对于 192.168.0.1 就是 1192.168.0.1;2192.168.0.1;3192.168.0.1
 			hash := int(m.hash([]byte(strconv.Itoa(i) + key)))
+			// 将hash值加入到key中
 			m.keys = append(m.keys, hash)
+			// 保存虚拟节点对应的实体节点
 			m.hashMap[hash] = key
 		}
 	}
+	// 升序排序
 	sort.Ints(m.keys)
 }
 
@@ -70,6 +81,7 @@ func (m *Map) Get(key string) string {
 	hash := int(m.hash([]byte(key)))
 
 	// Binary search for appropriate replica.
+	// 查找满足条件的hash，使用的是一致性hash，所以是一个ring hash
 	idx := sort.Search(len(m.keys), func(i int) bool { return m.keys[i] >= hash })
 
 	// Means we have cycled back to the first replica.

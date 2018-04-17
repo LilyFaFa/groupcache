@@ -29,6 +29,9 @@ import (
 //
 // A ByteView is meant to be used as a value type, not
 // a pointer (like a time.Time).
+// 对string和bytes切片做了一个组合封装，如果b不是nil，那么认为数据是byte的切片类型
+// 否则认为是string类型，也就是为了支持无论数据类型是string类型还是byte的切片类型，都
+// 可以以type的切片类型或者是string类型读取，切分，或者是读取指定的byte
 type ByteView struct {
 	// If b is non-nil, b is used, else s is used.
 	b []byte

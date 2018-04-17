@@ -26,6 +26,7 @@ import (
 //
 // Implementation of Getter must call exactly one of the Set methods
 // on success.
+// Sink接口
 type Sink interface {
 	// SetString sets the value to s.
 	SetString(s string) error
@@ -48,6 +49,7 @@ func cloneBytes(b []byte) []byte {
 	return c
 }
 
+// 使用ByteView设置Sink，间接调用SetString，SetBytes等
 func setSinkView(s Sink, v ByteView) error {
 	// A viewSetter is a Sink that can also receive its value from
 	// a ByteView. This is a fast path to minimize copies when the
