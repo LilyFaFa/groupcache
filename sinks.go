@@ -27,6 +27,17 @@ import (
 // Implementation of Getter must call exactly one of the Set methods
 // on success.
 // Sink接口
+// Byteview是groupcache的最小存储单元.
+// 但是groupcache并不能直接将byteview类型的数据存入到cache中.
+// 在sinks文件中,提供了几个数据类型,用户只能将数据转换成sinks文件中定义好的数据类型,
+// 然后groupcache会自动将这些存入进来的数据转换成Byteview类型.
+
+// sinks的作用,就是丰富了groupcache的适用性,不强迫用户将存入进去的数据一定搞成Byteview,
+// 虽然groupcache的最小存储单元是Byteview.
+
+// Sink就像一个水槽,用户只需要把需要缓存的数据注入到这个水槽中,
+// groupcache将会把水槽中的数据缓存起来.
+
 type Sink interface {
 	// SetString sets the value to s.
 	SetString(s string) error

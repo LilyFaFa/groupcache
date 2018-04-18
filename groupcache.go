@@ -36,6 +36,15 @@ import (
 	"github.com/golang/groupcache/singleflight"
 )
 
+// 这是groupcache整个cache模块的核心部分.groupcache缓存的策略是,先分组,再找key.
+// 也就是说, 不同的组中,相同的key对应的值可以不一样.
+// 这种分组缓存的策略,可以方便我们在不同的业务场景中,简洁的设置缓存.
+// 这样只要在不同的组就不用担心key值相同了。
+
+// groupcache有一个很好的开始,即groupcache.NewGroup这个函数.
+// 再创建Group时,需要提供一个Getter接口类型的变量.
+// 咋一看去,个那就Getter是从groupcache获取key的value信息.
+// 其实不然,这个Getter的含义是,从别的地方获取key的value,并将key的value存入到groupcache中.
 // A Getter loads data for a key.
 type Getter interface {
 	// Get returns the value identified by key, populating dest.
@@ -170,6 +179,7 @@ type Group struct {
 	// loadGroup ensures that each key is only fetched once
 	// (either locally or remotely), regardless of the number of
 	// concurrent callers.
+	// 保证每个key的请求只有依次
 	loadGroup flightGroup
 
 	_ int32 // force Stats to be 8-byte aligned on 32-bit platforms

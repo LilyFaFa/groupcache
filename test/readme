@@ -1,0 +1,10 @@
+cache原理：在内存中维护一个cache。查询时，首先查询cache中是否已经缓存查询结果。
+如果已经缓存，直接返回缓存结果，如果没有缓存，将查询结果Load到cache中，然后返回结果。
+一共有以下几个部分
+consistenthash、groupcachepb、lru、singleflight、byteview、groupcache、http、peer、sinks
+
+singlemachine是一个单机的 cache，后台查询的数据源用了一个简单的 struct
+使用到的部分是 lru、singleflight、byteview、groupcache、sinks
+默认监听 9000 端口，在第一次请求 http://localhost:9000/singlemachine/key 因为 cache 中
+没有数据，所以会去进行一次查询，就会打印字符串 Get value from database.
+之后有了数据就不会去查询了

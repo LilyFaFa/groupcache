@@ -20,6 +20,7 @@ package lru
 import "container/list"
 
 // Cache is an LRU cache. It is not safe for concurrent access.
+// 链表存储
 type Cache struct {
 	// MaxEntries is the maximum number of cache entries before
 	// an item is evicted. Zero means no limit.
