@@ -8,3 +8,5 @@ singlemachine是一个单机的 cache，后台查询的数据源用了一个简�
 默认监听 9000 端口，在第一次请求 http://localhost:9000/singlemachine/key 因为 cache 中
 没有数据，所以会去进行一次查询，就会打印字符串 Get value from database.
 之后有了数据就不会去查询了
+
+multiplemachine没有调好
